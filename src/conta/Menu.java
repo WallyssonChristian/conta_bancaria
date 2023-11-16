@@ -17,7 +17,7 @@ public class Menu {
 			System.out.println("                                                    ");
 			System.out.println("****************************************************");
 			System.out.println("                                                    ");
-			System.out.println("                    NUDEBANK                        ");
+			System.out.println("                    CyanTree                        ");
 			System.out.println("                                                    ");
 			System.out.println("****************************************************");
 			System.out.println("                                                    ");
@@ -72,7 +72,7 @@ public class Menu {
 	}
 
 	public static void about() {
-		System.out.println("\nNUDEBANK - Deixe seu dinheiro trabalhar por você! ");
+		System.out.println("\nCyanTree - Onde o dinheiro nasce em árvores!      ");
 		System.out.println("****************************************************");
 		System.out.println("Projeto Desenvolvido por: Wallysson Araujo          ");
 		System.out.println("wallysson.christian@outlook.com                     ");
