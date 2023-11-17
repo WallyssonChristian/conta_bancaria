@@ -72,7 +72,24 @@ public class Menu {
 	}
 
 	public static void about() {
-		System.out.println("\nCyanTree - Onde o dinheiro nasce em árvores!      ");
+		System.out.println("\n                                                    ");
+		System.out.println("                           ****                     ");
+		System.out.println("                 **     ********                    ");
+		System.out.println("                ****    * *******                   ");
+		System.out.println("                *****  **********                   ");
+		System.out.println("                 ****   *******                     ");
+		System.out.println("                    ** ****                         ");
+		System.out.println("                ***  ***  **  **                    ");
+		System.out.println("               *****  **   ******                   ");
+		System.out.println("                ***  **     *****                   ");
+		System.out.println("                  *****      **                     ");
+		System.out.println("                   ***                              ");
+		System.out.println("                  ***                               ");
+		System.out.println("                 ****                               ");
+		System.out.println("                 *****                              ");
+		System.out.println("                *******                             ");
+		System.out.println("****************************************************");
+		System.out.println("    CyanTree - Onde o dinheiro nasce em árvores!    ");
 		System.out.println("****************************************************");
 		System.out.println("Projeto Desenvolvido por: Wallysson Araujo          ");
 		System.out.println("wallysson.christian@outlook.com                     ");
