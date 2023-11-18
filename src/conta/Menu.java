@@ -1,5 +1,7 @@
 package conta;
 
+import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import conta.model.*;
 import conta.util.Cores;
@@ -51,38 +53,65 @@ public class Menu {
 			System.out.println("                                                    ");
 			System.out.println("****************************************************");
 			System.out.print("Entre com a opção desejada: ");
-			op = read.nextInt();
 			
+			try {
+				op = read.nextInt();
+			} catch (InputMismatchException e){
+				System.out.println("\nDigite valores inteiros!");
+				read.nextLine();
+				op = 0;
+			}
+				
 			switch(op) {
 			case 1:
 				System.out.println("Criar Conta");
+
+				keyPress();
 				break;
 			case 2:
 				System.out.println("Listar todas as Contas ");
+
+				keyPress();
 				break;
 			case 3:
 				System.out.println("Buscar Conta por Numero");
+
+				keyPress();
 				break;
 			case 4:
 				System.out.println("Atualizar Dados da Conta");
+
+				keyPress();
 				break;
 			case 5:
 				System.out.println("Apagar Conta");
+
+				keyPress();
 				break;
 			case 6:
 				System.out.println("Sacar");
+
+				keyPress();
 				break;
 			case 7:
 				System.out.println("Depositar");
+
+				keyPress();
 				break;
 			case 8:
 				System.out.println("Transferir valores entre Contas");
+
+				keyPress();
 				break;
 			case 9:
 				about();
+
+				keyPress();
 				break;
 			default:
 				System.out.println(Cores.TEXT_RED + "Opção Inválida");
+
+				keyPress();
 				break;
 			}
 			
@@ -113,5 +142,14 @@ public class Menu {
 		System.out.println("wallysson.christian@outlook.com                     ");
 		System.out.println("github.com/WallyssonChristian                       ");
 		System.out.println("****************************************************");
+	}
+	
+	public static void keyPress() {
+		try {
+			System.out.println("\nPressione Enter para Continuar...");
+			System.in.read();
+		} catch (IOException e) {
+			System.out.println("Você pressionou uma tecla diferente de enter!");
+		}
 	}
 }
