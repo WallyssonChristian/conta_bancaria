@@ -1,6 +1,8 @@
 package conta.model;
 
 public abstract class Conta {
+	
+	final String line = ("====================================================");
 
 	// Atributos da Classe
 	private int numero, agencia, tipo;
@@ -83,9 +85,9 @@ public abstract class Conta {
 			break;
 		}
 		
-		System.out.println("\n****************************************************");
-		System.out.println("Dados da Conta:");
-		System.out.println("****************************************************");
+		System.out.println(line);
+		System.out.println("			Dados da Conta			");
+		System.out.println(line);
 		System.out.println("Numero da conta: " + this.numero);
 		System.out.println("Agência: " + this.agencia);
 		System.out.println("Tipo da conta: " + tipo);

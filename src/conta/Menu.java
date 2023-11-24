@@ -33,8 +33,7 @@ public class Menu {
 		
 		ContaPoupanca cp2 = new ContaPoupanca(contas.gerarNumero(), 125, 2, "Wallysson Araujo", 8000f, 25);
 		contas.cadastrar(cp2);
-		
-		contas.listarTodas();
+
 		
 		// MENU
 		do {
@@ -63,27 +62,52 @@ public class Menu {
 			try {
 				op = read.nextInt();
 			} catch (InputMismatchException e){
-				System.out.println("\nDigite valores inteiros!\n\n");
+				System.err.println("\nDigite valores inteiros!\n\n");
 				read.nextLine();
 				op = 0;
 			}
 				
 			switch(op) {
 				case 1:
-					System.out.println("\n=================== Criar Conta ==================\n");
-					System.out.print("Digite o Numero da Agência: ");
-					agencia = read.nextInt();
-					System.out.print("\nDigite o Nome do Titular: ");
-					read.skip("\\R?");
-					titular = read.nextLine();
+					System.out.println("\n==================== Criar Conta ===================\n");
+					
+					try {
+						System.out.print("Digite o Número da Agência: ");
+						agencia = read.nextInt();
+					} catch (InputMismatchException e) {
+						System.err.println("Deve conter apenas Números!");
+						keyPress();
+						break;
+					}
+					
+					try {
+						System.out.print("\nDigite o Nome do Titular: ");
+						read.skip("\\R?");
+						titular = read.nextLine();
+						verificarString(titular);
+					} catch (InputMismatchException e) {
+						System.err.println("Erro: " + e.getMessage());
+						keyPress();
+						break;
+					}
 					
 					do {
 						System.out.print("\nDigite o Tipo da Conta (1-CC ou 2-CP): ");
 						tipo = read.nextInt();
-					}while(tipo < 1 && tipo > 2);
+					}while(tipo < 1 || tipo > 2);
 					
-					System.out.print("\nDigite o Saldo da Conta (R$): ");
-					saldo = read.nextFloat();
+					do {
+						
+						System.out.print("\nDigite o Saldo da Conta (R$): ");
+						while(!read.hasNextFloat()) {
+							System.out.println("Por favor, digite um valor válido.");
+							System.out.print("\nDigite o Saldo da Conta (R$): ");
+							read.next();
+						}
+						saldo = read.nextFloat();
+						if (saldo < 0) System.out.println("O valor não pode ser negativo!");
+					} while (saldo < 0);
+
 					
 					switch(tipo) {
 						case 1: 
@@ -101,13 +125,13 @@ public class Menu {
 					keyPress();
 					break;
 				case 2:
-					System.out.println("Listar todas as Contas ");
+					System.out.println("\n============== Listar todas as Contas ==============");
 					contas.listarTodas();
 					keyPress();
 					break;
 				case 3:
-					System.out.println("Consultar dados da Conta - por número\n");
-					System.out.println("Digite o número da conta: ");
+					System.out.println("\n= Consultar dados da Conta - por número =\n");
+					System.out.print("Digite o número da conta: ");
 					numero = read.nextInt();
 					
 					contas.procurarPorNumero(numero);
@@ -115,44 +139,44 @@ public class Menu {
 					keyPress();
 					break;
 				case 4:
-					System.out.println("Atualizar Dados da Conta\n");
+					System.out.println("\n============= Atualizar Dados da Conta =============\n");
 					
-					System.out.println("Digite o número da conta: ");
+					System.out.print("Digite o número da conta: ");
 					numero = read.nextInt();
 					
 					if (contas.buscarNaCollection(numero) != null) {
-						System.out.print("Digite o Numero da Agência: ");
+						System.out.print("Digite o novo Numero da Agência: ");
 						agencia = read.nextInt();
-						System.out.print("\nDigite o Nome do Titular: ");
+						System.out.print("\nDigite o novo Nome do Titular: ");
 						read.skip("\\R?");
 						titular = read.nextLine();						
-						System.out.print("\nDigite o Saldo da Conta (R$): ");
+						System.out.print("\nDigite o novo Saldo da Conta (R$): ");
 						saldo = read.nextFloat();
 						
 						tipo = contas.retornaTipo(numero);
 						
 						switch(tipo) {
 							case 1: 
-								System.out.print("\nDigite o Limite de Crédito (R$): ");
+								System.out.print("\nDigite o novo Limite de Crédito (R$): ");
 								limite = read.nextFloat();
 								contas.atualizar(new ContaCorrente(numero, agencia, tipo, titular, saldo, limite));
 								break;
 							case 2:
-								System.out.print("\nDigite o dia do Aniversario da Conta: ");
+								System.out.print("\nDigite o novo dia do Aniversario da Conta: ");
 								aniversario = read.nextInt();
 								contas.atualizar(new ContaPoupanca(numero, agencia, tipo, titular, saldo, aniversario));
 								break;
 							default:
-								System.out.println("Tipo de conta inválido");
+								System.err.println("Tipo de conta inválido");
 								break;
 						}
 					} else {
-						System.out.println("\nConta não encontrada!");
+						System.err.println("\nConta não encontrada!");
 					}
 					keyPress();
 					break;
 				case 5:
-					System.out.println("Apagar Conta");
+					System.out.println("\n==================== Apagar Conta ====================");
 					System.out.println("Digite o número da conta: ");
 					numero = read.nextInt();
 					
@@ -161,7 +185,7 @@ public class Menu {
 					keyPress();
 					break;
 				case 6:
-					System.out.println("Sacar\n");
+					System.out.println("\n==================== Sacar ====================\n");
 					
 					System.out.println("Digite o Numero da conta: ");
 					numero = read.nextInt();
@@ -175,7 +199,7 @@ public class Menu {
 					keyPress();
 					break;
 				case 7:
-					System.out.println("Depositar");
+					System.out.println("\n==================== Depositar ====================\n");
 					System.out.println("Digite o Número da conta: ");
 					numero = read.nextInt();
 					
@@ -189,7 +213,7 @@ public class Menu {
 					keyPress();
 					break;
 				case 8:
-					System.out.println("Transferir valores entre Contas");
+					System.out.println("\n====================Transferir valores entre Contas ====================\n");
 	
 					System.out.println("Digite o Número da Conta de Origem: ");
 					numero = read.nextInt();
@@ -211,7 +235,7 @@ public class Menu {
 					keyPress();
 					break;
 				default:
-					System.out.println(Cores.TEXT_RED + "Opção Inválida");
+					System.err.println("Opção Inválida");
 	
 					keyPress();
 					break;
@@ -221,22 +245,23 @@ public class Menu {
 	}
 
 	public static void about() {
-		System.out.println("\n                                                    ");
-		System.out.println("                           ****                     ");
-		System.out.println("                 **     ********                    ");
-		System.out.println("                ****    * *******                   ");
-		System.out.println("                *****  **********                   ");
-		System.out.println("                 ****   *******                     ");
-		System.out.println("                    ** ****                         ");
-		System.out.println("                ***  ***  **  **                    ");
-		System.out.println("               *****  **   ******                   ");
-		System.out.println("                ***  **     *****                   ");
-		System.out.println("                  *****      **                     ");
-		System.out.println("                   ***                              ");
-		System.out.println("                  ***                               ");
-		System.out.println("                 ****                               ");
-		System.out.println("                 *****                              ");
-		System.out.println("                *******                             ");
+		System.out.println("\n                        *                        		 ");
+		System.out.println("                       ***                               ");
+		System.out.println("                      *****                              ");
+		System.out.println("                     *******                             ");
+		System.out.println("                    *********                            ");
+		System.out.println("                   ***********                           ");
+		System.out.println("                  *************                          ");
+		System.out.println("                 ***************                         ");
+		System.out.println("                    *********                            ");
+		System.out.println("                   ***********                           ");
+		System.out.println("                  *************                   		 ");
+		System.out.println("                 ***************                     	 ");
+		System.out.println("                       ***                               ");
+		System.out.println("                       ***                               ");
+		System.out.println("                       ***                               ");
+		System.out.println("                      *****                              ");
+		System.out.println("                     *******                             ");
 		System.out.println(line);
 		System.out.println("    CyanTree - Onde o dinheiro nasce em árvores!    ");
 		System.out.println(line);
@@ -252,6 +277,12 @@ public class Menu {
 			System.in.read();
 		} catch (IOException e) {
 			System.out.println("Você pressionou uma tecla diferente de enter!");
+		}
+	}
+	
+	public static void verificarString(String input) {
+		if (!input.matches("^[\\p{L}\\s]+$")) {
+			throw new InputMismatchException("O nome não deve conter números.");
 		}
 	}
 }
