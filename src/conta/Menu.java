@@ -17,7 +17,7 @@ public class Menu {
 	
 		ContaController contas = new ContaController();
 		int op, numero, agencia, tipo, aniversario, numeroDestino;
-		String titular;
+		String titular, confirm;
 		float saldo, limite, valor;
 		
 		System.out.println("\nCriar Contas\n");
@@ -38,7 +38,7 @@ public class Menu {
 		// MENU
 		do {
 			
-			System.out.print(Cores.TEXT_CYAN_BOLD_BRIGHT);
+			System.out.print(Cores.tema);
 			System.out.println("                                                    ");
 			System.out.println(line);
 			System.out.println("                                                    ");
@@ -62,7 +62,7 @@ public class Menu {
 			try {
 				op = read.nextInt();
 			} catch (InputMismatchException e){
-				System.err.println("\nDigite valores inteiros!\n\n");
+				System.out.println(Cores.error + "\nDigite valores inteiros!\n" + Cores.tema);
 				read.nextLine();
 				op = 0;
 			}
@@ -75,7 +75,7 @@ public class Menu {
 						System.out.print("Digite o Número da Agência: ");
 						agencia = read.nextInt();
 					} catch (InputMismatchException e) {
-						System.err.println("Deve conter apenas Números!");
+						System.out.println("Deve conter apenas Números!");
 						keyPress();
 						break;
 					}
@@ -86,7 +86,7 @@ public class Menu {
 						titular = read.nextLine();
 						verificarString(titular);
 					} catch (InputMismatchException e) {
-						System.err.println("Erro: " + e.getMessage());
+						System.out.println("o: " + e.getMessage());
 						keyPress();
 						break;
 					}
@@ -130,7 +130,7 @@ public class Menu {
 					keyPress();
 					break;
 				case 3:
-					System.out.println("\n= Consultar dados da Conta - por número =\n");
+					System.out.println("\n======== Consultar dados da Conta por número =======\n");
 					System.out.print("Digite o número da conta: ");
 					numero = read.nextInt();
 					
@@ -167,31 +167,37 @@ public class Menu {
 								contas.atualizar(new ContaPoupanca(numero, agencia, tipo, titular, saldo, aniversario));
 								break;
 							default:
-								System.err.println("Tipo de conta inválido");
+								System.out.println("Tipo de conta inválido");
 								break;
 						}
 					} else {
-						System.err.println("\nConta não encontrada!");
+						System.out.println("\nConta não encontrada!");
 					}
 					keyPress();
 					break;
 				case 5:
-					System.out.println("\n==================== Apagar Conta ====================");
-					System.out.println("Digite o número da conta: ");
+					System.out.println("\n=================== Apagar Conta ===================");
+					System.out.print("Digite o número da conta: ");
 					numero = read.nextInt();
 					
-					contas.deletar(numero);
-					
+					contas.procurarPorNumero(numero);
+					System.out.println("\n" + Cores.error + "AVISO" + Cores.tema);
+					System.out.println("Tem certeza que deseja deletar a conta?");
+					System.out.print("Esse processo não pode ser desfeito(S/N): ");
+					read.skip("\\R?");
+					confirm = read.nextLine();
+					if (confirm.equalsIgnoreCase("S")) contas.deletar(numero);
+					else System.out.println("Conta não deletada");
 					keyPress();
 					break;
 				case 6:
-					System.out.println("\n==================== Sacar ====================\n");
+					System.out.print("\n======================= Sacar ======================\n");
 					
-					System.out.println("Digite o Numero da conta: ");
+					System.out.print("Digite o Numero da conta: ");
 					numero = read.nextInt();
 					
 					do {
-						System.out.println("Digite o Valor do Saque (R$): ");
+						System.out.print("Digite o Valor do Saque (R$): ");
 						valor = read.nextFloat();
 					}while(valor <= 0);
 					
@@ -200,11 +206,11 @@ public class Menu {
 					break;
 				case 7:
 					System.out.println("\n==================== Depositar ====================\n");
-					System.out.println("Digite o Número da conta: ");
+					System.out.print("Digite o Número da conta: ");
 					numero = read.nextInt();
 					
 					do {
-						System.out.println("Digite o Valor do Depósito (R$): ");
+						System.out.print("Digite o Valor do Depósito (R$): ");
 						valor = read.nextFloat();
 					}while(valor <= 0);
 					
@@ -215,9 +221,9 @@ public class Menu {
 				case 8:
 					System.out.println("\n====================Transferir valores entre Contas ====================\n");
 	
-					System.out.println("Digite o Número da Conta de Origem: ");
+					System.out.print("Digite o Número da Conta de Origem: ");
 					numero = read.nextInt();
-					System.out.println("Digite o Número da Conta de Destino: ");
+					System.out.print("Digite o Número da Conta de Destino: ");
 					numeroDestino = read.nextInt();
 					
 					do {
@@ -235,7 +241,7 @@ public class Menu {
 					keyPress();
 					break;
 				default:
-					System.err.println("Opção Inválida");
+					System.out.println("Opção Inválida");
 	
 					keyPress();
 					break;
