@@ -71,99 +71,114 @@ public class Menu {
 				case 1:
 					System.out.println("\n==================== Criar Conta ===================\n");
 					
-					try {
-						System.out.print("Digite o Número da Agência: ");
-						agencia = read.nextInt();
-					} catch (InputMismatchException e) {
-						System.out.println("Deve conter apenas Números!");
+					agencia = validaInt("Digite o Número da Agência: "); // Ler Agencia
+					if (agencia < 0) {
+						System.out.println(Cores.error + "Valor Inválido!" + Cores.tema);
+						keyPress();
+						break;
+					}
+										
+					titular = validaNome(); // Ler Nome do Titular
+					if (titular.equalsIgnoreCase("-1")) {
+						System.out.println(Cores.error + "Nome Inválido" + Cores.tema);
 						keyPress();
 						break;
 					}
 					
-					try {
-						System.out.print("\nDigite o Nome do Titular: ");
-						read.skip("\\R?");
-						titular = read.nextLine();
-						verificarString(titular);
-					} catch (InputMismatchException e) {
-						System.out.println("o: " + e.getMessage());
-						keyPress();
-						break;
-					}
-					
+					tipo = 0;
 					do {
-						System.out.print("\nDigite o Tipo da Conta (1-CC ou 2-CP): ");
-						tipo = read.nextInt();
-					}while(tipo < 1 || tipo > 2);
-					
-					do {
-						
-						System.out.print("\nDigite o Saldo da Conta (R$): ");
-						while(!read.hasNextFloat()) {
-							System.out.println("Por favor, digite um valor válido.");
-							System.out.print("\nDigite o Saldo da Conta (R$): ");
+						try {
+							System.out.print("Digite o Tipo da Conta (1-CC ou 2-CP): ");
+							tipo = read.nextInt();
+							if(tipo < 1 || tipo > 2) System.out.println("Tipo de Conta Inválido");
+						} catch(InputMismatchException e) {
+							System.out.println("Dado Inválido");
 							read.next();
 						}
-						saldo = read.nextFloat();
-						if (saldo < 0) System.out.println("O valor não pode ser negativo!");
-					} while (saldo < 0);
+					} while (tipo < 1 || tipo > 2);
+					
+					do { // Testando tipos diferentes de validação
+						saldo = validaSaldo("Digite o Saldo da Conta (R$): ");
+						if (saldo <= 0) System.out.println("O valor não pode ser negativo ou zero!");
+					} while (saldo <= 0);
 
 					
 					switch(tipo) {
 						case 1: 
-							System.out.print("\nDigite o Limite de Crédito (R$): ");
-							limite = read.nextFloat();
+							do {
+								limite = validaCredito();
+								if (limite <= 0) System.out.println("Limite Inválido!");
+							} while (limite <= 0);
 							contas.cadastrar(new ContaCorrente(contas.gerarNumero(), agencia, tipo, titular, saldo, limite));
 							break;
 						case 2:
-							System.out.print("\nDigite o dia do Aniversario da Conta: ");
-							aniversario = read.nextInt();
+							do {
+								aniversario = validaInt("Digite o dia do Aniversario da Conta: ");
+							} while (aniversario > 0 && aniversario < 32);
 							contas.cadastrar(new ContaPoupanca(contas.gerarNumero(), agencia, tipo, titular, saldo, aniversario));
 							break;
 					}
 					
 					keyPress();
 					break;
+					
 				case 2:
 					System.out.println("\n============== Listar todas as Contas ==============");
 					contas.listarTodas();
 					keyPress();
 					break;
+					
 				case 3:
 					System.out.println("\n======== Consultar dados da Conta por número =======\n");
-					System.out.print("Digite o número da conta: ");
-					numero = read.nextInt();
+					
+					numero = validaInt("Digite o número da conta: ");
 					
 					contas.procurarPorNumero(numero);
 					
 					keyPress();
 					break;
+					
 				case 4:
-					System.out.println("\n============= Atualizar Dados da Conta =============\n");
+					System.out.println("\n============= Atualizar Dados da Conta =============");
 					
-					System.out.print("Digite o número da conta: ");
-					numero = read.nextInt();
+					numero = validaInt("Digite o número da conta: ");
 					
-					if (contas.buscarNaCollection(numero) != null) {
-						System.out.print("Digite o novo Numero da Agência: ");
-						agencia = read.nextInt();
-						System.out.print("\nDigite o novo Nome do Titular: ");
-						read.skip("\\R?");
-						titular = read.nextLine();						
-						System.out.print("\nDigite o novo Saldo da Conta (R$): ");
-						saldo = read.nextFloat();
+					if (contas.buscarNaCollection(numero).isPresent()) {
+						System.out.println("\n========= Digite os novos valores da conta =========\n");
+						
+						agencia = validaInt("Digite o Número da Agência: ");
+						if (agencia < 0) {
+							System.out.println(Cores.error + "Valor Inválido!" + Cores.tema);
+							keyPress();
+							break;
+						}
+						
+						titular = validaNome();
+						if (titular.equalsIgnoreCase("1")) {
+							System.out.println(Cores.error + "Nome Inválido" + Cores.tema);
+							keyPress();
+							break;
+						}			
+						
+						do {
+							saldo = validaSaldo("Digite o Saldo da Conta (R$): ");
+							if (saldo <= 0) System.out.println("O valor não pode ser negativo ou zero!");
+						} while (saldo <= 0);
 						
 						tipo = contas.retornaTipo(numero);
 						
 						switch(tipo) {
 							case 1: 
-								System.out.print("\nDigite o novo Limite de Crédito (R$): ");
-								limite = read.nextFloat();
+								do {
+									limite = validaCredito();
+									if (limite <= 0) System.out.println("Limite Inválido!");
+								} while (limite <= 0);
 								contas.atualizar(new ContaCorrente(numero, agencia, tipo, titular, saldo, limite));
 								break;
 							case 2:
-								System.out.print("\nDigite o novo dia do Aniversario da Conta: ");
-								aniversario = read.nextInt();
+								do {
+									aniversario = validaInt("Digite o dia do Aniversario da Conta: ");
+								} while (aniversario > 0 && aniversario < 32);
 								contas.atualizar(new ContaPoupanca(numero, agencia, tipo, titular, saldo, aniversario));
 								break;
 							default:
@@ -177,8 +192,8 @@ public class Menu {
 					break;
 				case 5:
 					System.out.println("\n=================== Apagar Conta ===================");
-					System.out.print("Digite o número da conta: ");
-					numero = read.nextInt();
+					
+					numero = validaInt("Digite o número da conta: ");
 					
 					contas.procurarPorNumero(numero);
 					System.out.println("\n" + Cores.error + "AVISO" + Cores.tema);
@@ -193,21 +208,26 @@ public class Menu {
 				case 6:
 					System.out.print("\n======================= Sacar ======================\n");
 					
-					System.out.print("Digite o Numero da conta: ");
-					numero = read.nextInt();
+					numero = validaInt("Digite o número da conta: ");
+					if(contas.buscarNaCollection(numero).isEmpty()) {
+						System.out.println("A Conta não foi encontrada!");
+						keyPress();
+						break;
+					}
 					
+					System.out.println("Valor disponivel para saque: R$" + contas.retornaSaldo(numero));
 					do {
 						System.out.print("Digite o Valor do Saque (R$): ");
 						valor = read.nextFloat();
+						if(valor <= 0) System.out.println("Digite um valor válido!");
 					}while(valor <= 0);
 					
 					contas.sacar(numero, valor);
 					keyPress();
 					break;
 				case 7:
-					System.out.println("\n==================== Depositar ====================\n");
-					System.out.print("Digite o Número da conta: ");
-					numero = read.nextInt();
+					System.out.println("\n===================== Depositar ====================\n");
+					numero = validaInt("Digite o número da conta: ");
 					
 					do {
 						System.out.print("Digite o Valor do Depósito (R$): ");
@@ -219,16 +239,14 @@ public class Menu {
 					keyPress();
 					break;
 				case 8:
-					System.out.println("\n====================Transferir valores entre Contas ====================\n");
+					System.out.println("\n========== Transferir valores entre Contas =========\n");
 	
-					System.out.print("Digite o Número da Conta de Origem: ");
-					numero = read.nextInt();
-					System.out.print("Digite o Número da Conta de Destino: ");
-					numeroDestino = read.nextInt();
+					numero = validaInt("Digite o Número da Conta de Origem: ");
+					numeroDestino = validaInt("Digite o Número da Conta de Destino: ");
 					
 					do {
-						System.out.println("Digite o Valor da Transferência (R$): ");
-						valor = read.nextFloat();
+						valor = validaSaldo("Digite o Valor da Transferência (R$): ");
+						if (valor <= 0) System.out.println("O valor não pode ser negativo ou zero!");
 					}while(valor <=0);
 					
 					contas.transferir(numero, numeroDestino, valor);
@@ -251,25 +269,25 @@ public class Menu {
 	}
 
 	public static void about() {
-		System.out.println("\n                        *                        		 ");
-		System.out.println("                       ***                               ");
-		System.out.println("                      *****                              ");
-		System.out.println("                     *******                             ");
-		System.out.println("                    *********                            ");
-		System.out.println("                   ***********                           ");
-		System.out.println("                  *************                          ");
-		System.out.println("                 ***************                         ");
-		System.out.println("                    *********                            ");
-		System.out.println("                   ***********                           ");
-		System.out.println("                  *************                   		 ");
-		System.out.println("                 ***************                     	 ");
-		System.out.println("                       ***                               ");
-		System.out.println("                       ***                               ");
-		System.out.println("                       ***                               ");
-		System.out.println("                      *****                              ");
-		System.out.println("                     *******                             ");
+		System.out.println("\n                        *                    	    ");
+		System.out.println("                       ***                          ");
+		System.out.println("                      *****                         ");
+		System.out.println("                     *******                        ");
+		System.out.println("                    *********                       ");
+		System.out.println("                   ***********                      ");
+		System.out.println("                  *************                     ");
+		System.out.println("                 ***************                    ");
+		System.out.println("                    *********                       ");
+		System.out.println("                   ***********                      ");
+		System.out.println("                  *************               	    ");
+		System.out.println("                 ***************                	");
+		System.out.println("                       ***                          ");
+		System.out.println("                       ***                          ");
+		System.out.println("                       ***                          ");
+		System.out.println("                      *****                         ");
+		System.out.println("                     *******                        ");
 		System.out.println(line);
-		System.out.println("    CyanTree - Onde o dinheiro nasce em árvores!    ");
+		System.out.println("  CyanTree - Onde o seu dinheiro nasce em árvores!  ");
 		System.out.println(line);
 		System.out.println("Projeto Desenvolvido por: Wallysson Araujo          ");
 		System.out.println("wallysson.christian@outlook.com                     ");
@@ -279,7 +297,7 @@ public class Menu {
 	
 	public static void keyPress() {
 		try {
-			System.out.println("\nPressione Enter para Continuar...");
+			System.out.println(Cores.tema + "\nPressione Enter para Continuar...");
 			System.in.read();
 		} catch (IOException e) {
 			System.out.println("Você pressionou uma tecla diferente de enter!");
@@ -290,5 +308,51 @@ public class Menu {
 		if (!input.matches("^[\\p{L}\\s]+$")) {
 			throw new InputMismatchException("O nome não deve conter números.");
 		}
+	}
+	
+	public static int validaInt(String texto) {
+		try {
+			System.out.print(texto);
+			return read.nextInt();
+		} catch (InputMismatchException e) {
+			System.out.println("Deve conter apenas Números!");
+			read.next();
+			return -1;
+		}
+	}
+	
+	public static String validaNome() {
+		String titular;
+		try {
+			System.out.print("Digite o Nome do Titular: ");
+			read.skip("\\R?");
+			titular = read.nextLine();
+			verificarString(titular);
+			return titular;
+		} catch (InputMismatchException e) {
+			System.out.println(e.getMessage());
+			return "-1";
+		}
+	}
+	
+	public static float validaCredito() {
+			try {
+				System.out.print("Digite o Limite de Crédito (R$): ");
+				return read.nextFloat();
+			} catch (InputMismatchException e) {
+				System.out.println("Deve conter apenas Números!");
+				read.next();
+				return -1;
+			}
+	}
+	
+	public static float validaSaldo(String texto) {
+		System.out.print(texto);
+		while(!read.hasNextFloat()) {
+			System.out.println("Por favor, digite um valor válido.");
+			System.out.print(texto);
+			read.next();
+		}
+		return read.nextFloat();
 	}
 }

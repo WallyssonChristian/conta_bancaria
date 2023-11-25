@@ -7,6 +7,7 @@ public class Cores {
 
 			public static final String tema = "\033[1;96m";
 			public static final String error = "\u001B[31m";
+			public static final String sucess = "\u001B[32m";
 			//Text Color
 			public static final String TEXT_BLACK = "\u001B[30m";
 			public static final String TEXT_RED = "\u001B[31m";
